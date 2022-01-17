@@ -5,7 +5,7 @@ plugins {
     application
 }
 
-group = "me.navneetu"
+group = "no.navneet"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -13,7 +13,11 @@ repositories {
 }
 
 dependencies {
+    implementation("org.slf4j:slf4j-api:1.7.30")
+    implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation("ch.qos.logback:logback-core:1.2.3")
     testImplementation(kotlin("test"))
+    testImplementation("org.assertj:assertj-core:3.11.1")
 }
 
 tasks.test {
@@ -24,6 +28,24 @@ tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+tasks {
+    val fatJar = register<Jar>("fatJar") {
+        dependsOn.addAll(listOf("compileJava", "compileKotlin", "processResources"))
+        archiveClassifier.set("standalone") // Naming the jar
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        manifest { attributes(mapOf("Main-Class" to application.mainClass)) }
+        val sourcesMain = sourceSets.main.get()
+        val contents = configurations.runtimeClasspath.get()
+            .map { if (it.isDirectory) it else zipTree(it) } +
+                sourcesMain.output
+        from(contents)
+    }
+    build {
+        dependsOn(fatJar) // Trigger fat jar creation during build
+    }
+}
+
+
 application {
-    mainClassName = "MainKt"
+    mainClass.set("no.navneet.blackjack.MainKt")
 }
