@@ -6,7 +6,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 
-class CardReader() {
+class CardReader {
 
     fun createDeck(args: Array<String>): Deck? {
         return if (args.isNotEmpty()) {

@@ -1,7 +1,6 @@
 package no.navneet.blackjack.game
 
 import no.navneet.blackjack.entity.Player
-import no.navneet.blackjack.entity.Result
 
 object Evaluation {
     private const val MAX_SCORE_TO_BE_IN_GAME = 21
